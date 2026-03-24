@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: chessgame
+      POSTGRES_USER: chessuser
+      POSTGRES_PASSWORD: chesspass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - chess-network
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgresql://chessuser:chesspass@postgres:5432/chessgame
+      NODE_ENV: production
+    depends_on:
+      - postgres
+    networks:
+      - chess-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://backend:8080
+      VITE_WS_URL: ws://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - chess-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  chess-network:
+    driver: bridge
