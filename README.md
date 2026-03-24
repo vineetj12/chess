@@ -12,6 +12,24 @@ A beautiful, modern chess game with WebSocket multiplayer support and automatic 
 
 ## Quick Start
 
+### Deploy On Render (Recommended)
+
+This repo includes a Render blueprint at [render.yaml](render.yaml).
+
+1. Push this repository to GitHub.
+2. In Render, click **New +** -> **Blueprint**.
+3. Select your GitHub repository.
+4. Render will create:
+   - `chessgame-db` (Postgres)
+   - `chessgame-backend` (Docker web service)
+   - `chessgame-frontend` (Static site)
+5. After first deploy, open [render.yaml](render.yaml) and confirm `VITE_WS_URL` matches your backend Render URL.
+6. Trigger a redeploy of frontend if you changed `VITE_WS_URL`.
+
+Notes:
+- Backend now respects Render's `PORT` env automatically.
+- For browser security, keep WebSocket URL as `wss://...` on Render.
+
 ### Using Docker (Development)
 
 1. **Clone the repository**

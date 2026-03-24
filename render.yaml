@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: chessgame-backend
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chessgame-db
+          property: connectionString
+
+  - type: web
+    name: chessgame-frontend
+    runtime: static
+    rootDir: ./frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_WS_URL
+        value: wss://chessgame-backend.onrender.com
+
+databases:
+  - name: chessgame-db
+    databaseName: chessgame
+    user: chessuser
